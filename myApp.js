@@ -1,12 +1,32 @@
 var express = require('express');
 var app = express();
 var bGround = require('fcc-express-bground');
+var bodyParser = require("body-parser");
 require("dotenv").config();
 const mySecret = process.env['MESSAGE_STYLE']
+
+app.use(bodyParser.json());
 
 app.use(function middleware(req, res, next) {
   console.log(`${req.method} ${req.path} - ${req.ip}`)
   next();
+});
+
+app.post("/name", function(req, res) {
+  // Handle the data in the request
+  var string = req.body.first + " " + req.body.last;
+  res.json({ name: string });
+});
+
+app.get("/name", function(req, res) {
+  var firstName = req.query.first;
+  var lastName = req.query.last;
+  // OR you can destructure and rename the keys
+  var { first: firstName, last: lastName } = req.query;
+  // Use template literals to form a formatted string
+  res.json({
+    name: `${firstName} ${lastName}`
+  });
 });
 
 app.get(
